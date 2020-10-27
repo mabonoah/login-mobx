@@ -1,0 +1,53 @@
+.message-container {
+    padding: 20px;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .message-section {
+        height: 220px;
+        width: calc(100% + 40px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+
+        .icon {
+            color: #ffffff;
+            font-size: 80px;
+        }
+
+        .message-title {
+            color: #ffffff;
+        }
+    }
+
+    .message-btn {
+        margin: 15px 0;
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 767.98px) {
+    .message-container {
+        padding: 15px;
+        padding-top: 0;
+
+        .message-section {
+            height: 200px;
+            width: calc(100% + 30px);
+            margin-bottom: 25px;
+
+            .icon {
+                font-size: 60px;
+            }
+        }
+
+        .message-btn {
+            margin: 10px 0;
+        }
+    }
+}

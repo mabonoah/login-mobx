@@ -1,0 +1,23 @@
+.form {
+    .login-field {
+        margin-top: 15px
+    }
+
+    .submit-btn {
+        margin-top: 20px;
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 767.98px) {
+    .form {
+        .login-field {
+            margin-top: 12px
+        }
+
+        .submit-btn {
+            margin-top: 15px;
+        }
+    }
+
+}
