@@ -6,7 +6,7 @@ export const Connect = ({ onClick }) => (
     <TypographyTag className="connect-title" variant="h4">
       Connect
     </TypographyTag>
-    <TypographyTag variant="subtitle2">Welcome to connect demo!</TypographyTag>
+    <TypographyTag variant="subtitle2">Welcome to Login demo!</TypographyTag>
     <ButtonTag className="connect-btn" onClick={onClick}>
       Start
     </ButtonTag>

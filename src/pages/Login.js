@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { LoginTemplate } from "./../components/templates";
+import { OTP } from "../pages";
 
 const Joi = require("joi");
 
@@ -47,7 +48,17 @@ export class Login extends Component {
     e.preventDefault();
     const errors = this.validate();
     if (errors) return;
-    this.props.onSuccessLogin();
+    this.onSuccessLogin();
+  };
+
+  onSuccessLogin = () => {
+    // clone
+    const state = { ...this.state };
+    // edit
+    const otpPage = <OTP onVerifyOTP={this.handleVerifyOTP}></OTP>;
+    state.modalContent = otpPage;
+    // set state
+    this.setState(state);
   };
 
   validate = () => {

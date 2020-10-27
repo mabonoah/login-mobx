@@ -1,4 +1,4 @@
-import { MessageTypes } from "../../../enums";
+import { MessageTypes } from "../../../shared/enums";
 import { MaterialIcon, ButtonTag, TypographyTag } from "../../atoms";
 import "./MessageOrganism.scss";
 

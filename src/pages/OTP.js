@@ -1,6 +1,7 @@
 import { Component } from "react";
-import { MessageTypes } from "../enums";
+import { MessageTypes } from "../shared/enums";
 import { OTPTemplate } from "../components/templates";
+import { Message } from "../pages";
 
 const Joi = require("joi");
 
@@ -45,7 +46,17 @@ export class OTP extends Component {
       +this.state.otp.trim() === this.randomNumber
         ? MessageTypes.Success
         : MessageTypes.Fail;
-    this.props.onVerifyOTP(messageType);
+    this.onVerifyOTP(messageType);
+  };
+
+  onVerifyOTP = (messageType) => {
+    // clone
+    const state = { ...this.state };
+    // edit
+    const messagePage = <Message type={messageType}></Message>;
+    state.modalContent = messagePage;
+    // set state
+    this.setState(state);
   };
 
   validate = () => {

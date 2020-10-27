@@ -1,10 +1,13 @@
 import Container from "@material-ui/core/Container";
 import { LandingPage } from "./pages";
+import { StoreProvider } from "./shared/classes";
 
 function App() {
   return (
     <Container>
-      <LandingPage></LandingPage>
+      <StoreProvider>
+        <LandingPage></LandingPage>
+      </StoreProvider>
     </Container>
   );
 }
