@@ -1,81 +1,55 @@
-import { Component } from "react";
+import React, { useState } from "react";
 import { MessageTypes } from "../shared/enums";
+import { StoreContext } from "./../shared/classes";
 import { OTPTemplate } from "../components/templates";
 import { Message } from "../pages";
 
 const Joi = require("joi");
+const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
-export class OTP extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { otp: "", errors: {} };
-  }
+export const OTP = () => {
+  const store = React.useContext(StoreContext);
 
-  randomNumber = Math.floor(100000 + Math.random() * 900000);
+  const [otp, setOTP] = useState(() => "");
+  const [error, setError] = useState(() => "");
 
-  schema = Joi.object({
-    otp: Joi.number().required(),
-  });
+  const schema = Joi.number().integer().required();
 
-  render() {
-    return (
-      <OTPTemplate
-        value={this.state.otp}
-        otpNumber={this.randomNumber}
-        onChange={this.handleChange}
-        error={this.state.errors.otp}
-        onSubmit={this.handleSubmit}
-      ></OTPTemplate>
-    );
-  }
-
-  handleChange = (e) => {
-    // clone
-    const state = { ...this.state };
-    // edit
-    state[e.currentTarget.name] = e.currentTarget.value;
-    // set State
-    this.setState(state);
+  const handleChange = (e) => {
+    setOTP(e.currentTarget.value);
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = this.validate();
-    if (errors) return;
+    const error = validate();
+    if (error) return;
     const messageType =
-      +this.state.otp.trim() === this.randomNumber
-        ? MessageTypes.Success
-        : MessageTypes.Fail;
-    this.onVerifyOTP(messageType);
+      +otp.trim() === randomNumber ? MessageTypes.Success : MessageTypes.Fail;
+    onVerifyOTP(messageType);
   };
 
-  onVerifyOTP = (messageType) => {
-    // clone
-    const state = { ...this.state };
-    // edit
+  const onVerifyOTP = (messageType) => {
     const messagePage = <Message type={messageType}></Message>;
-    state.modalContent = messagePage;
-    // set state
-    this.setState(state);
+    store.changeModalContent(messagePage);
   };
 
-  validate = () => {
-    const errors = {};
-    // clone
-    const state = { ...this.state };
-
-    // edit
-    delete state.errors;
-    const res = this.schema.validate(state, { abortEarly: false });
-    if (!res.error && this.state.otp.length === 6) {
-      this.setState({ errors: {} });
-      return null;
+  const validate = () => {
+    let error = "";
+    const res = schema.validate(otp);
+    if (res.error || otp.length !== 6) {
+      error = "Must be a six digits";
     }
-
-    errors.otp = "Must be a six digits";
-
-    // set State
-    this.setState({ errors });
-    return errors;
+    setError(error);
+    return error;
   };
-}
+
+  return (
+    <OTPTemplate
+      value={otp}
+      otpNumber={randomNumber}
+      onChange={handleChange}
+      error={error}
+      onSubmit={handleSubmit}
+    ></OTPTemplate>
+  );
+};

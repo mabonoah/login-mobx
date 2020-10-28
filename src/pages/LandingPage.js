@@ -1,7 +1,7 @@
 import React from "react";
 import { DynamicModal } from "../components/organisms";
 import { LandingPageTemplate } from "../components/templates";
-import { Message } from "./../pages";
+import { Login } from "./../pages";
 import { StoreContext } from "./../shared/classes";
 import { Observer } from "mobx-react";
 
@@ -9,7 +9,7 @@ export const LandingPage = () => {
   const store = React.useContext(StoreContext);
 
   const handleStartClick = () => {
-    store.changeModalContent(<Message></Message>);
+    store.changeModalContent(<Login></Login>);
     store.openModal();
   };
 

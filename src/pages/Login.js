@@ -1,16 +1,20 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
+import { StoreContext } from "./../shared/classes";
 import { LoginTemplate } from "./../components/templates";
 import { OTP } from "../pages";
 
 const Joi = require("joi");
 
-export class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { email: "", password: "", errors: {} };
-  }
+export const Login = () => {
+  const store = React.useContext(StoreContext);
 
-  schema = Joi.object({
+  const [email, setEmail] = useState(() => "");
+  const [password, setPassword] = useState(() => "");
+  const [errors, setErrors] = useState(() => {
+    return {};
+  });
+
+  const schema = Joi.object({
     email: Joi.string()
       .email({
         minDomainSegments: 2,
@@ -20,81 +24,65 @@ export class Login extends Component {
     password: Joi.string().required(),
   });
 
-  render() {
-    return (
-      <LoginTemplate
-        emailValue={this.state.email}
-        emailError={this.state.errors.email}
-        passwordValue={this.state.password}
-        passwordError={this.state.errors.password}
-        invalidCredentialsError={this.state.errors.invalidCredentials}
-        onChangeEmail={this.handleChange}
-        onChangePassword={this.handleChange}
-        onSubmit={this.handleSubmit}
-      ></LoginTemplate>
-    );
-  }
-
-  handleChange = (e) => {
-    // clone
-    const state = { ...this.state };
-    // edit
-    state[e.currentTarget.name] = e.currentTarget.value;
-    // set State
-    this.setState(state);
+  const handleEmailChange = (e) => {
+    setEmail(e.currentTarget.value);
   };
 
-  handleSubmit = (e) => {
+  const handlePasswordChange = (e) => {
+    setPassword(e.currentTarget.value);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = this.validate();
-    if (errors) return;
-    this.onSuccessLogin();
+    const errors = validate();
+    if (Object.keys(errors).length > 0) return;
+    onSuccessLogin();
   };
 
-  onSuccessLogin = () => {
-    // clone
-    const state = { ...this.state };
-    // edit
-    const otpPage = <OTP onVerifyOTP={this.handleVerifyOTP}></OTP>;
-    state.modalContent = otpPage;
-    // set state
-    this.setState(state);
+  const onSuccessLogin = () => {
+    store.changeModalContent(<OTP></OTP>);
   };
 
-  validate = () => {
+  const validate = () => {
     const errors = {};
-    // clone
-    const state = { ...this.state };
+    const state = { email: email, password: password };
 
-    // edit
-    delete state.errors;
-    const res = this.schema.validate(state, { abortEarly: false });
-    const isValidCredentials = this.validateCredentials();
-    if (!res.error && isValidCredentials) {
-      this.setState({ errors: {} });
-      return null;
+    const res = schema.validate(state, { abortEarly: false });
+    const isValidCredentials = validateCredentials();
+
+    if (res.error) {
+      for (const error of res.error.details) {
+        errors[error.path] = renameErrorMessage(error.message);
+      }
     } else if (!res.error && !isValidCredentials) {
       errors["invalidCredentials"] = "Invalid Email or Password";
-    } else {
-      for (const error of res.error.details) {
-        errors[error.path] = this.renameErrorMessage(error.message);
-      }
     }
-
-    // set State
-    this.setState({ errors });
+    setErrors({ ...errors });
     return errors;
   };
 
-  validateCredentials = () => {
+  const validateCredentials = () => {
     return (
-      this.state.email.trim().toLowerCase() === "m.ali@gmail.com" &&
-      this.state.password.trim() === "12345"
+      email.trim().toLowerCase() === "m.ali@gmail.com" &&
+      password.trim() === "12345"
     );
   };
 
-  renameErrorMessage = (message) => {
+  const renameErrorMessage = (message) => {
     if (message.includes("empty")) return "Required";
     return "Invalid Email";
   };
-}
+
+  return (
+    <LoginTemplate
+      emailValue={email}
+      emailError={errors.email}
+      passwordValue={password}
+      passwordError={errors.password}
+      invalidCredentialsError={errors.invalidCredentials}
+      onChangeEmail={handleEmailChange}
+      onChangePassword={handlePasswordChange}
+      onSubmit={handleSubmit}
+    ></LoginTemplate>
+  );
+};
