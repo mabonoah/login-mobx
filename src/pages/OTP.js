@@ -36,7 +36,9 @@ export const OTP = () => {
   const validate = () => {
     let error = "";
     const res = schema.validate(otp);
-    if (res.error || otp.length !== 6) {
+    if (otp.length === 0) {
+      error = "Required";
+    } else if (res.error || otp.length !== 6) {
       error = "Must be a six digits";
     }
     setError(error);
